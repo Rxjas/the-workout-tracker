@@ -1,23 +1,23 @@
-const router = require("express").Router();
-const db = require("../models/workout.js");
+const express = require('express');
+const router = express.Router();
+const db = require('../models/workout.js')
 
 // GET workouts route
 router.get('/', async (req, res) => {
-    db.find({})
-    .sort({ day: -1 })
-    .then(dbWorkouts =>{
-        res.json(dbWorkouts)
-    })
-    .catch (error => {
+    try {
+        const result = await db.Workout.find({});
+        res.json(result);
+    }
+    catch (error) {
         console.log(error)
         res.status(400).json(error)
-    });
+    }
 });
 
 // POST workouts route NEW WORKOUT
 router.post('/', async ({ body }, res) => {
     try {
-        const results = await db.create(body);
+        const results = await db.Workout.create(body);
         res.json(results);
     }
     catch (error) {
@@ -31,10 +31,10 @@ router.put('/:id', async (req, res) => {
     const { params, body } = req;
     try {
         let savedExercises = [];
-        const prevWorkout = await db.findById(params.id);
+        const prevWorkout = await db.Workout.findById(params.id);
         savedExercises = prevWorkout.exercises;
         totalExercises = [...savedExercises, body];
-        res.json(await db.findByIdAndUpdate(params.id, { exercises: totalExercises }));  
+        res.json(await db.Workout.findByIdAndUpdate(params.id, { exercises: totalExercises }));  
     }
     catch (error) {
         console.log(error)
@@ -45,7 +45,7 @@ router.put('/:id', async (req, res) => {
 // get route for workout range
 router.get('/range', async (req, res) => {
     try {
-        const result = await db.find({}).sort({ day: -1 }).limit(7);
+        const result = await db.Workout.find({}).sort({ day: -1 }).limit(7);
         res.json(result);
     }
     catch (error) {
@@ -53,5 +53,6 @@ router.get('/range', async (req, res) => {
         res.status(400).json(error)
     }
 });
-//export all above in router
-module.exports = router;
+
+
+module.exports = router

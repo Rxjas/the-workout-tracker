@@ -1,58 +1,56 @@
-//require the mongoose package
 const mongoose = require("mongoose");
 
-//set up schema
 const Schema = mongoose.Schema;
 
-const workoutSchema = new Schema(
-    {
-        day: {type: Date, default: new Date()},
-        excercises: [
-            {
-             type: {
+const workoutSchema = new Schema({
+
+    day: { type: Date, default: new Date() },
+    exercises: [
+        {
+            type: {
                 type: String,
                 trim: true,
-                required: "Enter the type of workout"
-                },
+                required: "Enter type of workout"
+            },
             name: {
                 type: String,
                 trim: true,
-                required: "Enter the name of workout"
-                },
+                required: "Enter a name for the exercise"
+            },
             duration: {
                 type: Number,
-                required: "Enter the duration"
-                },
+                required: "Enter a duration of time"
+            },
             weight: {
-                type: Number,
-                },
+                type: Number
+            },
             reps: {
-                type: Number,
-                },
+                type: Number
+            },
             sets: {
-                type: Number,
-                 },
+                type: Number
+            },
             distance: {
-                type: Number,
-                    }
+                type: Number
             }
-        ]
-    },{
-        toObject: {
-            virtuals: true
-        },
-        toJSON: {
-            virtuals: true
         }
+    ]
+}, {
+    toObject: {
+        virtuals: true
+    },
+    toJSON: {
+        virtuals: true
     }
-
-);
+});
 
 workoutSchema.virtual('totalDuration')
     .get(function () {
         return this.exercises.map(e => e.duration).reduce((d, a) => a + d, 0)
     });
 
-const Workout = mongoose.model('workout', workoutSchema);
+
+const Workout = mongoose.model("workout", workoutSchema);
+
 
 module.exports = Workout;

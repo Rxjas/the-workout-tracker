@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const Workout = require("../models/workout.js");
+const Workout = require("../models/workout");
 
 router.get("/api/workouts", ({ body }, res) => {
     Workout.find({}, (error, data) => {
@@ -40,9 +40,9 @@ router.post("/api/workouts", (req, res) => {
 });
 
 router.get("/api/workouts/range", (req, res) => {
-    var days = new Date();
-    days.setDate(days.getDate() - 7)
-    Workout.find({ day: { "$gte": days } }, (error, data) => {
+    var d = new Date();
+    d.setDate(d.getDate() - 7)
+    Workout.find({ day: { "$gte": d } }, (error, data) => {
         if (error) {
             res.send(error);
         } else {

@@ -21,6 +21,7 @@ const workoutSchema = new Schema(
                 },
             duration: {
                 type: Number,
+                required: "Enter the duration"
                 },
             weight: {
                 type: Number,
@@ -36,11 +37,21 @@ const workoutSchema = new Schema(
                     }
             }
         ]
+    },{
+        toObject: {
+            virtuals: true
+        },
+        toJSON: {
+            virtuals: true
+        }
     }
 
 );
 
-
+workoutSchema.virtual('totalDuration')
+    .get(function () {
+        return this.exercises.map(e => e.duration).reduce((d, a) => a + d, 0)
+    });
 
 const Workout = mongoose.model('workout', workoutSchema);
 

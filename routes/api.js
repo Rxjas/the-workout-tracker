@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const Workout = require("../models/workout");
 
+//get route for the workouts
 router.get("/api/workouts", ({ body }, res) => {
     Workout.find({}, (error, data) => {
         if (error) {
@@ -11,6 +12,7 @@ router.get("/api/workouts", ({ body }, res) => {
     });
 });
 
+//Put route to push excercise into workout
 router.put("/api/workouts/:id", (req, res) => {
     Workout.findByIdAndUpdate(
         req.params.id,
@@ -29,6 +31,7 @@ router.put("/api/workouts/:id", (req, res) => {
     );
 });
 
+//post route to create the workout
 router.post("/api/workouts", (req, res) => {
     Workout.create({})
         .then(dbWorkout => {
@@ -39,10 +42,11 @@ router.post("/api/workouts", (req, res) => {
         });
 });
 
+//get route for those in range
 router.get("/api/workouts/range", (req, res) => {
-    var d = new Date();
-    d.setDate(d.getDate() - 7)
-    Workout.find({ day: { "$gte": d } }, (error, data) => {
+    var days = new Date();
+    days.setDate(days.getDate() - 7)
+    Workout.find({ day: { "$gte": days } }, (error, data) => {
         if (error) {
             res.send(error);
         } else {

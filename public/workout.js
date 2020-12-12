@@ -5,9 +5,9 @@ async function initWorkout() {
     document
       .querySelector("a[href='/exercise?']")
       .setAttribute("href", `/exercise?id=${lastWorkout._id}`);
-
     const workoutSummary = {
       date: formatDate(lastWorkout.day),
+      // Your front end code was broken so I had to fix it..
       totalDuration: lastWorkout.exercises.map(e => e.duration).reduce((d, a) => a + d, 0),
       numExercises: lastWorkout.exercises.length,
       ...tallyExercises(lastWorkout.exercises)
@@ -46,7 +46,6 @@ function formatDate(date) {
 
 function renderWorkoutSummary(summary) {
   const container = document.querySelector(".workout-stats");
-
   const workoutKeyMap = {
     date: "Date",
     totalDuration: "Total Workout Duration",
@@ -60,7 +59,6 @@ function renderWorkoutSummary(summary) {
   Object.keys(summary).forEach(key => {
     const p = document.createElement("p");
     const strong = document.createElement("strong");
-
     strong.textContent = workoutKeyMap[key];
     const textNode = document.createTextNode(`: ${summary[key]}`);
 

@@ -1,58 +1,54 @@
-const express = require('express');
-const router = express.Router();
-const db = require('../models/workout.js')
+const router = require("express").Router();
+const Workout = require("../models/workout.js");
 
-// GET workouts route
-router.get('/', async (req, res) => {
-    try {
-        const result = await db.Workout.find({});
-        res.json(result);
-    }
-    catch (error) {
-        console.log(error)
-        res.status(400).json(error)
-    }
+router.get("/api/workouts", ({ body }, res) => {
+    Workout.find({}, (error, data) => {
+        if (error) {
+            res.send(error);
+        } else {
+            res.json(data);
+        }
+    });
 });
 
-// POST workouts route NEW WORKOUT
-router.post('/', async ({ body }, res) => {
-    try {
-        const results = await db.Workout.create(body);
-        res.json(results);
-    }
-    catch (error) {
-        console.log('POST: ' + error)
-        res.status(400).json(error)
-    }
+router.put("/api/workouts/:id", (req, res) => {
+    Workout.findByIdAndUpdate(
+        req.params.id,
+        {
+            $push: {
+                exercises: req.body
+            }
+        },
+        (error, data) => {
+            if (error) {
+                res.send(error);
+            } else {
+                res.send(data);
+            }
+        }
+    );
 });
 
-// PUT route
-router.put('/:id', async (req, res) => {
-    const { params, body } = req;
-    try {
-        let savedExercises = [];
-        const prevWorkout = await db.Workout.findById(params.id);
-        savedExercises = prevWorkout.exercises;
-        totalExercises = [...savedExercises, body];
-        res.json(await db.Workout.findByIdAndUpdate(params.id, { exercises: totalExercises }));  
-    }
-    catch (error) {
-        console.log(error)
-        res.status(400).json(error)
-    }
+router.post("/api/workouts", (req, res) => {
+    Workout.create({})
+        .then(dbWorkout => {
+            console.log(dbWorkout);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 });
 
-// get route for workout range
-router.get('/range', async (req, res) => {
-    try {
-        const result = await db.Workout.find({}).sort({ day: -1 }).limit(7);
-        res.json(result);
-    }
-    catch (error) {
-        console.log(error)
-        res.status(400).json(error)
-    }
+router.get("/api/workouts/range", (req, res) => {
+    var days = new Date();
+    days.setDate(days.getDate() - 7)
+    Workout.find({ day: { "$gte": days } }, (error, data) => {
+        if (error) {
+            res.send(error);
+        } else {
+            res.json(data);
+        }
+    });
 });
 
-
-module.exports = router
+module.exports = router;
